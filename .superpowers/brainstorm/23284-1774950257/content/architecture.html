@@ -1,0 +1,72 @@
+<h2>架构方案选择</h2>
+<p class="subtitle">Three.js 与物理引擎的集成方式，这是整个项目最核心的决策</p>
+
+<div class="options">
+  <div class="option" data-choice="react-three" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>React Three Fiber + use-cannon</h3>
+      <p>React 生态的 3D 框架。用 JSX 声明式写 Three.js 场景，use-cannon 基于 Cannon-es 提供物理。代码风格统一（全是 React 组件），生态丰富（后处理、控制器等都有现成库），社区活跃。但 React 组件模式与游戏循环有一定摩擦，且 use-cannon 是轻量物理引擎不是 Ammo.js。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="r3f-ammo" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>React Three Fiber + Ammo.js 自行集成（推荐）</h3>
+      <p>用 React Three Fiber 渲染（声明式写法、React 状态管理），但物理层直接用 Ammo.js 通过 useFrame 游戏循环手动同步。兼具 R3F 的开发效率和 Ammo.js 的完整物理能力。物理同步逻辑需要自己写，但完全可控。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="vanilla" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>原生 Three.js + Ammo.js</h3>
+      <p>不用 React Three Fiber，直接在 React 组件中用原生 Three.js + Ammo.js。完全控制渲染循环和物理步进，无抽象层开销。但需要手动管理 Three.js 对象生命周期，与 React 状态管理脱节，代码量大。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:30px;">
+  <h3>对比总结</h3>
+  <table style="width:100%; border-collapse:collapse; font-size:14px;">
+    <thead>
+      <tr style="border-bottom:2px solid #00f0ff33;">
+        <th style="text-align:left; padding:8px; color:#00f0ff;">维度</th>
+        <th style="text-align:left; padding:8px; color:#00f0ff;">A. R3F + use-cannon</th>
+        <th style="text-align:left; padding:8px; color:#00f0ff;">B. R3F + Ammo.js</th>
+        <th style="text-align:left; padding:8px; color:#00f0ff;">C. 原生 Three.js</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #1a1a3e;">
+        <td style="padding:8px;">物理能力</td>
+        <td style="padding:8px; color:#ff6b6b;">轻量 (Cannon-es)</td>
+        <td style="padding:8px; color:#4ade80;">完整 (Ammo.js/Bullet)</td>
+        <td style="padding:8px; color:#4ade80;">完整 (Ammo.js/Bullet)</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1a1a3e;">
+        <td style="padding:8px;">开发效率</td>
+        <td style="padding:8px; color:#4ade80;">最高</td>
+        <td style="padding:8px; color:#fbbf24;">高</td>
+        <td style="padding:8px; color:#ff6b6b;">较低</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1a1a3e;">
+        <td style="padding:8px;">可控性</td>
+        <td style="padding:8px; color:#ff6b6b;">受限于库封装</td>
+        <td style="padding:8px; color:#4ade80;">完全可控</td>
+        <td style="padding:8px; color:#4ade80;">完全可控</td>
+      </tr>
+      <tr style="border-bottom:1px solid #1a1a3e;">
+        <td style="padding:8px;">游戏机制扩展</td>
+        <td style="padding:8px; color:#ff6b6b;">传送门/跳台难实现</td>
+        <td style="padding:8px; color:#4ade80;">斜坡/跳台/传送门都行</td>
+        <td style="padding:8px; color:#4ade80;">斜坡/跳台/传送门都行</td>
+      </tr>
+      <tr>
+        <td style="padding:8px;">代码量</td>
+        <td style="padding:8px;">中等</td>
+        <td style="padding:8px;">中等</td>
+        <td style="padding:8px; color:#ff6b6b;">大</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

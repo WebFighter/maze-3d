@@ -1,0 +1,47 @@
+<h2>你希望迷宫的美术风格是什么？</h2>
+<p class="subtitle">这将决定墙壁、地面和整体视觉氛围</p>
+
+<div class="cards">
+  <div class="card" data-choice="lowpoly" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); display:flex; align-items:center; justify-content:center; height:180px; position:relative; overflow:hidden;">
+      <div style="position:absolute; bottom:0; left:10%; width:0; height:0; border-left:30px solid transparent; border-right:30px solid transparent; border-bottom:80px solid #e94560; opacity:0.8;"></div>
+      <div style="position:absolute; bottom:0; left:35%; width:0; height:0; border-left:40px solid transparent; border-right:40px solid transparent; border-bottom:100px solid #533483; opacity:0.7;"></div>
+      <div style="position:absolute; bottom:0; left:60%; width:0; height:0; border-left:25px solid transparent; border-right:25px solid transparent; border-bottom:70px solid #0f3460; opacity:0.9;"></div>
+      <div style="position:absolute; top:20px; right:20px; width:30px; height:30px; background:#e94560; border-radius:50%; box-shadow: 0 0 20px #e94560, 0 0 40px #e94560;"></div>
+      <div style="position:absolute; bottom:0; left:0; right:0; height:20px; background:#0a0a1a;"></div>
+    </div>
+    <div class="card-body">
+      <h3>A. 低多边形 (Low-Poly)</h3>
+      <p>简洁的几何体风格，色彩鲜明，现代感强。墙壁和地面使用多边形面片，视觉效果清爽。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="scifi" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(180deg, #0a0a0a 0%, #1a0a2e 100%); display:flex; align-items:center; justify-content:center; height:180px; position:relative; overflow:hidden;">
+      <div style="position:absolute; bottom:0; left:5%; width:25%; height:90%; background: linear-gradient(180deg, #0d0d2b, #1a1a3e); border: 1px solid #00f0ff; border-bottom:none; box-shadow: inset 0 0 15px rgba(0,240,255,0.1);"></div>
+      <div style="position:absolute; bottom:0; left:35%; width:25%; height:90%; background: linear-gradient(180deg, #0d0d2b, #1a1a3e); border: 1px solid #00f0ff; border-bottom:none; box-shadow: inset 0 0 15px rgba(0,240,255,0.1);"></div>
+      <div style="position:absolute; bottom:0; left:65%; width:25%; height:90%; background: linear-gradient(180deg, #0d0d2b, #1a1a3e); border: 1px solid #00f0ff; border-bottom:none; box-shadow: inset 0 0 15px rgba(0,240,255,0.1);"></div>
+      <div style="position:absolute; top:20%; left:10%; width:15%; height:2px; background:#00f0ff; box-shadow:0 0 5px #00f0ff;"></div>
+      <div style="position:absolute; top:40%; left:40%; width:15%; height:2px; background:#bf00ff; box-shadow:0 0 5px #bf00ff;"></div>
+      <div style="position:absolute; bottom:0; left:0; right:0; height:15px; background:#050510; border-top:1px solid #00f0ff33;"></div>
+    </div>
+    <div class="card-body">
+      <h3>B. 赛博朋克 / 科幻</h3>
+      <p>深色基调搭配霓虹发光线条，墙壁带有发光边缘。科技感十足，配合小球光源效果极佳。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="medieval" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(180deg, #2c1810 0%, #1a0f08 100%); display:flex; align-items:center; justify-content:center; height:180px; position:relative; overflow:hidden;">
+      <div style="position:absolute; bottom:0; left:5%; width:25%; height:85%; background: repeating-linear-gradient(0deg, #5c3a1e 0px, #6b4423 8px, #5c3a1e 16px); border: 2px solid #3d2510;"></div>
+      <div style="position:absolute; bottom:0; left:35%; width:25%; height:85%; background: repeating-linear-gradient(0deg, #5c3a1e 0px, #6b4423 8px, #5c3a1e 16px); border: 2px solid #3d2510;"></div>
+      <div style="position:absolute; bottom:0; left:65%; width:25%; height:85%; background: repeating-linear-gradient(0deg, #5c3a1e 0px, #6b4423 8px, #5c3a1e 16px); border: 2px solid #3d2510;"></div>
+      <div style="position:absolute; top:15%; right:15%; width:24px; height:24px; background: radial-gradient(circle, #ff9500, #ff6600); border-radius:50%; box-shadow: 0 0 15px #ff9500, 0 0 30px #ff660066;"></div>
+      <div style="position:absolute; bottom:0; left:0; right:0; height:18px; background: repeating-linear-gradient(90deg, #3d2510 0px, #4a2e14 20px, #3d2510 40px);"></div>
+    </div>
+    <div class="card-body">
+      <h3>C. 中世纪石墙</h3>
+      <p>砖石纹理的墙壁，温暖火把般的灯光。经典地牢迷宫风格，氛围感强。</p>
+    </div>
+  </div>
+</div>

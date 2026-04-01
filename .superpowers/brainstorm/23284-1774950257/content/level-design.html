@@ -1,0 +1,26 @@
+<h2>关卡系统如何递进？</h2>
+<p class="subtitle">每一关之间的区别体现在哪里</p>
+
+<div class="options">
+  <div class="option" data-choice="size" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>地图尺寸递增</h3>
+      <p>关卡越高地图越大、路径越复杂。例如：5x5 → 8x8 → 12x12 → ... 每关自动生成新地图，玩家需要找到出口完成当前关卡才能进入下一关。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="size-and-mechanics" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>尺寸递增 + 逐渐引入新机制</h3>
+      <p>地图从小到大，同时逐步解锁新玩法：比如第3关开始有传送门，第5关有移动障碍，第7关有收集钥匙开门等。复杂度和玩法同步提升。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="preset" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>预设关卡 + 精心设计</h3>
+      <p>每关由设计师手动布局（非算法生成），有特定的解谜元素和固定路线。关卡质量更高但数量有限。</p>
+    </div>
+  </div>
+</div>

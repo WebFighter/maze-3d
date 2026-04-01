@@ -1,0 +1,45 @@
+<h2>游戏 UI 布局偏好</h2>
+<p class="subtitle">小地图、关卡信息、视角切换按钮的摆放位置</p>
+
+<div class="cards">
+  <div class="card" data-choice="layout-a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a1a; height:200px; position:relative; overflow:hidden; border:1px solid #1a1a3e;">
+      <div style="position:absolute; top:12px; left:12px; color:#00f0ff; font-size:12px; font-family:monospace; opacity:0.8;">
+        <div style="margin-bottom:4px;">关卡 1/10</div>
+        <div>时间 00:32</div>
+      </div>
+      <div style="position:absolute; top:12px; right:12px; width:80px; height:80px; border:1px solid #00f0ff; background:#0d0d2b; box-shadow: 0 0 10px rgba(0,240,255,0.2); display:flex; align-items:center; justify-content:center;">
+        <div style="width:6px; height:6px; background:#ff0055; border-radius:50%; box-shadow:0 0 6px #ff0055; margin-left:10px; margin-top:15px;"></div>
+      </div>
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#ffffff22; font-size:14px;">3D 游戏画面</div>
+      <div style="position:absolute; bottom:12px; right:12px; display:flex; gap:6px;">
+        <div style="padding:4px 10px; background:#0d0d2b; border:1px solid #00f0ff55; color:#00f0ff; font-size:10px; font-family:monospace;">第三视角</div>
+      </div>
+      <div style="position:absolute; bottom:12px; left:50%; transform:translateX(-50%); color:#ffffff15; font-size:10px; font-family:monospace;">WASD 移动 | 鼠标转向 | V 切换视角</div>
+    </div>
+    <div class="card-body">
+      <h3>A. 极简 HUD</h3>
+      <p>左上角关卡/时间信息，右上角小地图，右下角视角切换按钮，底部居中操控提示。画面最大化。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="layout-b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a1a; height:200px; position:relative; overflow:hidden; border:1px solid #1a1a3e;">
+      <div style="position:absolute; top:0; left:0; right:0; height:36px; background:linear-gradient(180deg, #0d0d2ecc, #0d0d2b00); display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
+        <div style="color:#00f0ff; font-size:12px; font-family:monospace;">关卡 1/10 | 时间 00:32</div>
+        <div style="padding:3px 10px; background:#0d0d2b; border:1px solid #00f0ff55; color:#00f0ff; font-size:10px; font-family:monospace;">第三视角</div>
+      </div>
+      <div style="position:absolute; top:44px; right:12px; width:100px; height:100px; border:1px solid #00f0ff; background:#0d0d2bdd; box-shadow: 0 0 10px rgba(0,240,255,0.2); display:flex; align-items:center; justify-content:center;">
+        <div style="width:6px; height:6px; background:#ff0055; border-radius:50%; box-shadow:0 0 6px #ff0055; margin-left:12px; margin-top:18px;"></div>
+      </div>
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#ffffff22; font-size:14px;">3D 游戏画面</div>
+      <div style="position:absolute; bottom:0; left:0; right:0; height:36px; background:linear-gradient(0deg, #0d0d2ecc, #0d0d2b00); display:flex; align-items:center; justify-content:center; gap:20px; color:#ffffff22; font-size:10px; font-family:monospace;">
+        WASD 移动 | 鼠标转向 | V 切换视角 | R 重置
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 沉浸式渐变边框</h3>
+      <p>顶栏和底栏用半透明渐变融入画面，小地图更大更清晰。信息和操控提示融入场景不突兀。</p>
+    </div>
+  </div>
+</div>
