@@ -8,8 +8,9 @@ import {
   isMovingBackward,
   isMovingLeft,
   isMovingRight,
+  consumeJump,
 } from '../systems/inputManager'
-import { BALL_RADIUS, FORCE_MULTIPLIER, CELL_SIZE } from './constants'
+import { BALL_RADIUS, FORCE_MULTIPLIER, CELL_SIZE, HORIZONTAL_DAMPING, JUMP_VELOCITY } from './constants'
 import * as THREE from 'three'
 
 export function Ball() {
@@ -21,21 +22,27 @@ export function Ball() {
   const setBallWorldPos = useGameStore((s) => s.setBallWorldPos)
   const revealNearbyCells = useGameStore((s) => s.revealNearbyCells)
 
-  const cameraRef = useRef<THREE.Camera | null>(null)
-
-  useFrame(({ camera }) => {
+  useFrame(({ camera }, delta) => {
     if (!ballRef.current || !mazeData) return
-    cameraRef.current = camera
+
+    const pos = ballRef.current.translation()
+    const vel = ballRef.current.linvel()
 
     // 更新小球网格位置（用于小地图）
-    const pos = ballRef.current.translation()
     const gridCol = Math.round(pos.x / CELL_SIZE)
     const gridRow = Math.round(pos.z / CELL_SIZE)
     setBallGridPos([gridRow, gridCol])
     setBallWorldPos([pos.x, pos.y, pos.z])
     revealNearbyCells(gridRow, gridCol, 3)
 
-    // 根据输入施加力
+    // 水平阻尼：只对 XZ 施加，Y 轴交给纯物理重力
+    const dampFactor = Math.exp(-HORIZONTAL_DAMPING * delta)
+    ballRef.current.setLinvel(
+      { x: vel.x * dampFactor, y: vel.y, z: vel.z * dampFactor },
+      true
+    )
+
+    // 根据输入施加水平力
     const forward = new THREE.Vector3(0, 0, -1)
     forward.applyQuaternion(camera.quaternion)
     forward.y = 0
@@ -60,6 +67,16 @@ export function Ball() {
       )
     }
 
+    // 跳跃：着地时才能跳，初始速度由 v=sqrt(2gh) 计算，物理重力自然减速
+    const isGrounded = vel.y > -0.1 && vel.y < 0.5 && pos.y <= BALL_RADIUS + 0.2
+    if (consumeJump() && isGrounded) {
+      const curVel = ballRef.current.linvel()
+      ballRef.current.setLinvel(
+        { x: curVel.x, y: JUMP_VELOCITY, z: curVel.z },
+        true
+      )
+    }
+
     // 防止小球飞出去
     if (pos.y < -5) {
       ballRef.current.setTranslation(
@@ -79,8 +96,9 @@ export function Ball() {
       ref={ballRef}
       position={startPos as [number, number, number]}
       colliders={false}
-      linearDamping={4}
+      linearDamping={0}
       angularDamping={4}
+      ccd
       name="ball"
       enabledRotations={[true, true, true]}
     >

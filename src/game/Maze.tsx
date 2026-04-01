@@ -73,6 +73,7 @@ export function Maze() {
       <instancedMesh
         ref={meshRef}
         args={[undefined, undefined, walls.length]}
+        frustumCulled={false}
         castShadow
         receiveShadow
       >

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGameStore } from '../stores/gameStore'
-import { consumeMouseDelta } from '../systems/inputManager'
+import { consumeMouseDelta, requestJump } from '../systems/inputManager'
 import {
   CAMERA_OFFSET_Y,
   CAMERA_OFFSET_Z,
@@ -23,6 +23,9 @@ export function CameraController() {
       }
       if (e.code === 'KeyR') {
         useGameStore.getState().startLevel(useGameStore.getState().currentLevel)
+      }
+      if (e.code === 'Space') {
+        requestJump()
       }
     }
     document.addEventListener('keydown', onKeyDown)

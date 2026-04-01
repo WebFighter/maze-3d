@@ -56,6 +56,20 @@ export function isMovingRight(): boolean {
   return isPressed('KeyD') || isPressed('ArrowRight')
 }
 
+let jumpRequested = false
+
+export function requestJump() {
+  jumpRequested = true
+}
+
+export function consumeJump(): boolean {
+  if (jumpRequested) {
+    jumpRequested = false
+    return true
+  }
+  return false
+}
+
 export function consumeMouseDelta(): { dx: number; dy: number } {
   const dx = mouseDeltaX
   const dy = mouseDeltaY
