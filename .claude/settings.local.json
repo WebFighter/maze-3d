@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(bash \"C:/Users/zhou/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Users/zhou/Desktop/my-github/maze-3d\")",
-      "Bash(cat \"C:/Users/zhou/Desktop/my-github/maze-3d/.superpowers/brainstorm/\"*/state/server-info)"
+      "Bash(cat \"C:/Users/zhou/Desktop/my-github/maze-3d/.superpowers/brainstorm/\"*/state/server-info)",
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 8 npx vite --host)",
+      "Bash(npm run:*)"
     ]
   }
 }
