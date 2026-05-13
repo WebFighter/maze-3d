@@ -1,0 +1,52 @@
+name: 构建并部署 Maze 3D
+run-name: ${{ github.actor }} 部署 🚀
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖并构建
+        run: |
+          npm ci
+          npm run build
+
+      - name: 传输文件到服务器
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "dist,Containerfile,container"
+          target: /opt/maze-3d
+          strip_components: 0
+
+      - name: 构建并部署
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/maze-3d
+            podman build -t maze-3d -f Containerfile .
+            echo "停止旧容器..."
+            podman stop maze-3d || true
+            echo "创建并启动新容器..."
+            podman create --replace --name maze-3d \
+              -p 80:80 \
+              maze-3d
+            podman start maze-3d
