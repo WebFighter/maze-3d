@@ -47,6 +47,6 @@ jobs:
             podman stop maze-3d || true
             echo "创建并启动新容器..."
             podman create --replace --name maze-3d \
-              -p 80:80 \
+              -p 7100:80 \
               maze-3d
             podman start maze-3d
