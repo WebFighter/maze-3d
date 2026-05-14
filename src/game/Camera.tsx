@@ -32,15 +32,15 @@ export function CameraController() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     const state = useGameStore.getState()
     if (state.phase !== 'playing') return
 
     const { dx, dy } = consumeMouseDelta()
-    yaw.current -= dx * 0.003
+    yaw.current -= dx * 0.002
     pitch.current = Math.max(
       -Math.PI / 3,
-      Math.min(Math.PI / 3, pitch.current - dy * 0.003)
+      Math.min(Math.PI / 3, pitch.current - dy * 0.002)
     )
 
     const [targetX, targetY, targetZ] = state.ballWorldPos
@@ -57,7 +57,8 @@ export function CameraController() {
         camera.position.set(camX, camY, camZ)
         initialized.current = true
       } else {
-        camera.position.lerp(new THREE.Vector3(camX, camY, camZ), 0.08)
+        const t = 1 - Math.exp(-5 * delta)
+        camera.position.lerp(new THREE.Vector3(camX, camY, camZ), t)
       }
       camera.lookAt(targetX, targetY, targetZ)
     } else {

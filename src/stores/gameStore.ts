@@ -85,7 +85,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   tickTime: (delta) =>
     set((s) => ({ elapsedTime: s.elapsedTime + delta })),
 
-  setBallGridPos: (pos) => set({ ballGridPos: pos }),
+  setBallGridPos: (pos) => {
+    const cur = get().ballGridPos
+    if (cur[0] === pos[0] && cur[1] === pos[1]) return
+    set({ ballGridPos: pos })
+  },
 
   setBallWorldPos: (pos) => set({ ballWorldPos: pos }),
 
@@ -93,22 +97,22 @@ export const useGameStore = create<GameState>((set, get) => ({
     const maze = get().mazeData
     if (!maze) return
     const visited = get().visitedCells
-    const newCells = new Set(visited)
-    let changed = false
+    const toAdd: string[] = []
     for (let dr = -radius; dr <= radius; dr++) {
       for (let dc = -radius; dc <= radius; dc++) {
         const r = row + dr
         const c = col + dc
         if (r >= 0 && r < maze.rows && c >= 0 && c < maze.cols) {
           const key = `${r},${c}`
-          if (!newCells.has(key)) {
-            newCells.add(key)
-            changed = true
+          if (!visited.has(key)) {
+            toAdd.push(key)
           }
         }
       }
     }
-    if (changed) {
+    if (toAdd.length > 0) {
+      const newCells = new Set(visited)
+      for (const key of toAdd) newCells.add(key)
       set({ visitedCells: newCells })
     }
   },

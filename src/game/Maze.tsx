@@ -69,26 +69,31 @@ export function Maze() {
         ))}
       </RigidBody>
 
-      {/* 墙壁渲染（InstancedMesh 高效绘制） */}
+      {/* 墙壁渲染（InstancedMesh 高效绘制，半透明全息效果） */}
       <instancedMesh
         ref={meshRef}
         args={[undefined, undefined, walls.length]}
         frustumCulled={false}
-        castShadow
-        receiveShadow
       >
         <boxGeometry args={[CELL_SIZE, WALL_HEIGHT, CELL_SIZE]} />
         <meshStandardMaterial
           color={skin.maze.wallColor}
           emissive={skin.maze.wallEmissive}
-          emissiveIntensity={0.5}
+          emissiveIntensity={0.6}
           metalness={0.8}
           roughness={0.3}
+          transparent
+          opacity={0.6}
+          depthWrite={false}
         />
       </instancedMesh>
 
       {/* 地面 */}
-      <RigidBody type="fixed" name="floor">
+      <RigidBody type="fixed" name="floor" colliders={false}>
+        <CuboidCollider
+          args={[50, 0.5, 50]}
+          position={[floorWidth / 2 - CELL_SIZE / 2, -0.5, floorDepth / 2 - CELL_SIZE / 2]}
+        />
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
           position={[floorWidth / 2 - CELL_SIZE / 2, 0, floorDepth / 2 - CELL_SIZE / 2]}

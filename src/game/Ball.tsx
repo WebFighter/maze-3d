@@ -10,8 +10,13 @@ import {
   isMovingRight,
   consumeJump,
 } from '../systems/inputManager'
-import { BALL_RADIUS, FORCE_MULTIPLIER, CELL_SIZE, HORIZONTAL_DAMPING, JUMP_VELOCITY } from './constants'
+import { BALL_RADIUS, MAX_SPEED, CELL_SIZE, ACCEL_RATE, DECEL_RATE, JUMP_VELOCITY } from './constants'
 import * as THREE from 'three'
+
+// 复用临时向量，避免每帧 GC 压力
+const _forward = new THREE.Vector3()
+const _right = new THREE.Vector3()
+const _inputDir = new THREE.Vector3()
 
 export function Ball() {
   const ballRef = useRef<RapierRigidBody>(null)
@@ -21,6 +26,9 @@ export function Ball() {
   const setBallGridPos = useGameStore((s) => s.setBallGridPos)
   const setBallWorldPos = useGameStore((s) => s.setBallWorldPos)
   const revealNearbyCells = useGameStore((s) => s.revealNearbyCells)
+
+  // 自己追踪水平速度，不回读物理引擎，避免反馈环路抖动
+  const horizVel = useRef({ x: 0, z: 0 })
 
   useFrame(({ camera }, delta) => {
     if (!ballRef.current || !mazeData) return
@@ -35,39 +43,43 @@ export function Ball() {
     setBallWorldPos([pos.x, pos.y, pos.z])
     revealNearbyCells(gridRow, gridCol, 3)
 
-    // 水平阻尼：只对 XZ 施加，Y 轴交给纯物理重力
-    const dampFactor = Math.exp(-HORIZONTAL_DAMPING * delta)
+    // 根据相机方向计算移动方向（复用临时向量）
+    _forward.set(0, 0, -1).applyQuaternion(camera.quaternion)
+    _forward.y = 0
+    _forward.normalize()
+
+    _right.set(1, 0, 0).applyQuaternion(camera.quaternion)
+    _right.y = 0
+    _right.normalize()
+
+    // 计算输入方向的目标速度
+    _inputDir.set(0, 0, 0)
+    if (isMovingForward()) _inputDir.add(_forward)
+    if (isMovingBackward()) _inputDir.sub(_forward)
+    if (isMovingRight()) _inputDir.add(_right)
+    if (isMovingLeft()) _inputDir.sub(_right)
+
+    const hasInput = _inputDir.lengthSq() > 0
+    const hv = horizVel.current
+
+    if (hasInput) {
+      _inputDir.normalize().multiplyScalar(MAX_SPEED)
+      const t = 1 - Math.exp(-ACCEL_RATE * delta)
+      hv.x += (_inputDir.x - hv.x) * t
+      hv.z += (_inputDir.z - hv.z) * t
+    } else {
+      const t = Math.exp(-DECEL_RATE * delta)
+      hv.x *= t
+      hv.z *= t
+    }
+
+    // 写入物理引擎：水平速度自己控制，Y 轴交给物理重力
     ballRef.current.setLinvel(
-      { x: vel.x * dampFactor, y: vel.y, z: vel.z * dampFactor },
+      { x: hv.x, y: vel.y, z: hv.z },
       true
     )
 
-    // 根据输入施加水平力
-    const forward = new THREE.Vector3(0, 0, -1)
-    forward.applyQuaternion(camera.quaternion)
-    forward.y = 0
-    forward.normalize()
-
-    const right = new THREE.Vector3(1, 0, 0)
-    right.applyQuaternion(camera.quaternion)
-    right.y = 0
-    right.normalize()
-
-    const force = new THREE.Vector3(0, 0, 0)
-    if (isMovingForward()) force.add(forward)
-    if (isMovingBackward()) force.sub(forward)
-    if (isMovingRight()) force.add(right)
-    if (isMovingLeft()) force.sub(right)
-
-    if (force.lengthSq() > 0) {
-      force.normalize().multiplyScalar(FORCE_MULTIPLIER)
-      ballRef.current.applyImpulse(
-        { x: force.x, y: 0, z: force.z },
-        true
-      )
-    }
-
-    // 跳跃：着地时才能跳，初始速度由 v=sqrt(2gh) 计算，物理重力自然减速
+    // 跳跃：着地时才能跳
     const isGrounded = vel.y > -0.1 && vel.y < 0.5 && pos.y <= BALL_RADIUS + 0.2
     if (consumeJump() && isGrounded) {
       const curVel = ballRef.current.linvel()
@@ -77,12 +89,15 @@ export function Ball() {
       )
     }
 
-    // 防止小球飞出去
+    // 防止小球飞出地图
     if (pos.y < -5) {
       ballRef.current.setTranslation(
         { x: mazeData.entrance[1] * CELL_SIZE, y: BALL_RADIUS + 0.1, z: mazeData.entrance[0] * CELL_SIZE },
         true
       )
+      ballRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true)
+      hv.x = 0
+      hv.z = 0
     }
   })
 
@@ -113,11 +128,20 @@ export function Ball() {
           roughness={0.2}
         />
       </mesh>
+      {/* 始终可见的轮廓光（不受墙壁深度遮挡） */}
+      <mesh renderOrder={999} visible={viewMode === 'thirdPerson'}>
+        <sphereGeometry args={[BALL_RADIUS * 1.3, 16, 16]} />
+        <meshBasicMaterial
+          color={skin.ball.material.emissive}
+          transparent
+          opacity={0.35}
+          depthTest={false}
+        />
+      </mesh>
       <pointLight
         color={skin.ball.lightColor}
         intensity={skin.ball.lightIntensity}
         distance={12}
-        castShadow
       />
     </RigidBody>
   )
